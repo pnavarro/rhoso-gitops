@@ -1,0 +1,41 @@
+# Metadata for documentation and QE
+metadata_version: "1.0"
+name: rhoso-gitops
+description: >-
+  Deploy Red Hat OpenStack Services on OpenShift (RHOSO) using GitOps via the
+  rhoso-gitops meta-chart and upstream Kustomize example overlays.
+pattern_version: "0.1.0"
+display_name: RHOSO GitOps
+repo_url: https://github.com/cjeanner/pattern-rhoso-gitops
+docs_repo_url: https://github.com/validatedpatterns/docs
+issues_url: https://github.com/cjeanner/pattern-rhoso-gitops/issues
+docs_url: https://github.com/cjeanner/pattern-rhoso-gitops#readme
+tier: sandbox
+owners: cjeanner
+requirements:
+  hub:
+    compute:
+      platform:
+        aws:
+          replicas: 3
+          type: m5.4xlarge
+        azure:
+          replicas: 3
+          type: Standard_D16s_v3
+        gcp:
+          replicas: 3
+          type: n1-standard-16
+    controlPlane:
+      platform:
+        aws:
+          replicas: 3
+          type: m5.2xlarge
+        azure:
+          replicas: 3
+          type: Standard_D8s_v3
+        gcp:
+          replicas: 3
+          type: n1-standard-8
+extra_features:
+  hypershift_support: false
+  spoke_support: false

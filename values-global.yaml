@@ -1,0 +1,12 @@
+---
+global:
+  pattern: rhoso-gitops
+  options:
+    useCSV: false
+    syncPolicy: Automatic
+    installPlanApproval: Automatic
+main:
+  clusterGroupName: standalone
+  multiSourceConfig:
+    enabled: true
+    clusterGroupChartVersion: "0.9.*"

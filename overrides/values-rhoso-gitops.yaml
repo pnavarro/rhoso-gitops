@@ -1,0 +1,63 @@
+---
+# Helm values for charts/all/rhoso-gitops (child Argo CD Applications).
+applicationNamespace: openshift-gitops
+destinationServer: https://kubernetes.default.svc
+applications:
+  operator-dependencies:
+    enabled: true
+    repoURL: https://github.com/openstack-k8s-operators/gitops
+    path: example/dependencies
+    targetRevision: v0.1.0
+    syncOptions:
+      - Prune=true
+    syncWave: "-20"
+  openstack-operator:
+    enabled: true
+    repoURL: https://github.com/openstack-k8s-operators/gitops
+    path: example/openstack-operator
+    targetRevision: v0.1.0
+    syncOptions:
+      - Prune=true
+    syncWave: "-20"
+  openstack-operator-cr:
+    enabled: true
+    repoURL: https://github.com/openstack-k8s-operators/gitops
+    path: example/openstack-operator-cr
+    targetRevision: v0.1.0
+    syncOptions:
+      - Prune=true
+    syncWave: "-15"
+  openstack-secrets:
+    enabled: false
+    repoURL: https://github.com/openstack-k8s-operators/gitops
+    path: TODO
+    targetRevision: v0.1.0
+    syncOptions:
+      - Prune=true
+    syncWave: "-10"
+  openstack-networks:
+    enabled: true
+    repoURL: https://github.com/openstack-k8s-operators/gitops
+    path: example/openstack-networks
+    targetRevision: v0.1.0
+    syncOptions:
+      - Prune=true
+    syncWave: "0"
+  openstack-controlplane:
+    enabled: true
+    repoURL: https://github.com/openstack-k8s-operators/gitops
+    path: example/openstack-controlplane
+    targetRevision: v0.1.0
+    finalizers:
+      - resources-finalizer.argocd.argoproj.io/foreground
+    syncOptions:
+      - Prune=true
+    syncWave: "10"
+  openstack-dataplane:
+    enabled: true
+    repoURL: https://github.com/openstack-k8s-operators/gitops
+    path: example/openstack-dataplane
+    targetRevision: v0.1.0
+    syncOptions:
+      - Prune=true
+    syncWave: "20"

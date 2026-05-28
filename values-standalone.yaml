@@ -1,0 +1,19 @@
+---
+clusterGroup:
+  name: standalone
+  namespaces:
+    openshift-gitops:
+    openstack-operators:
+    openstack:
+  argoProjects:
+    - rhoso-gitops-standalone
+  sharedValueFiles:
+    - '/overrides/values-{{ $.Values.global.clusterPlatform }}.yaml'
+  applications:
+    rhoso-gitops:
+      name: rhoso-gitops
+      namespace: openshift-gitops
+      argoProject: rhoso-gitops-standalone
+      path: charts/all/rhoso-gitops
+      extraValueFiles:
+        - /overrides/values-rhoso-gitops.yaml

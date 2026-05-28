@@ -1,0 +1,11 @@
+*~
+*.swp
+*.swo
+values-secret.yaml
+values-secret.yaml.*
+!values-secret.yaml.template
+.*.expected.yaml
+pattern-vault.init
+vault.init
+super-linter.log
+common/pattern-vault.init

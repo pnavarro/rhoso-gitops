@@ -1,0 +1,24 @@
+{{- range $name, $app := .Values.applications }}
+{{- if $app.enabled }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ $name }}
+  namespace: {{ include "rhoso-gitops.applicationNamespace" $ }}
+  finalizers:
+{{- include "rhoso-gitops.applicationFinalizers" (dict "app" $app) | nindent 4 }}
+  annotations:
+    argocd.argoproj.io/sync-wave: {{ include "rhoso-gitops.syncWave" (dict "app" $app) }}
+spec:
+  project: {{ include "rhoso-gitops.argocdProject" (dict "app" $app) }}
+  source:
+    repoURL: {{ $app.repoURL | quote }}
+    path: {{ include "rhoso-gitops.sourcePath" (dict "app" $app) }}
+    targetRevision: {{ include "rhoso-gitops.targetRevision" (dict "app" $app) }}
+{{ include "rhoso-gitops.sourceKustomize" (dict "app" $app) }}
+  destination:
+    server: {{ include "rhoso-gitops.destinationServer" $ }}
+{{ include "rhoso-gitops.syncPolicySpec" (dict "app" $app) }}
+{{- end }}
+{{- end }}

@@ -1,0 +1,74 @@
+---
+# Validate charts/all/rhoso-gitops: lint, helm-unittest, kubeconform, package.
+name: helm-chart
+permissions:
+  contents: read
+on:  # yamllint disable-line rule:truthy
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "charts/**"
+      - ".github/workflows/helm-chart.yaml"
+  push:
+    branches:
+      - main
+    paths:
+      - "charts/**"
+      - ".github/workflows/helm-chart.yaml"
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    env:
+      KUBECONFORM_VERSION: v0.6.7
+      KUBECONFORM_SHA256: 95f14e87aa28c09d5941f11bd024c1d02fdc0303ccaa23f61cef67bc92619d73
+      HELM_UNITTEST_VERSION: v0.7.0
+      KUBERNETES_SCHEMA_VERSION: "1.29.0"
+    defaults:
+      run:
+        working-directory: charts/all/rhoso-gitops
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: v3.16.3
+
+      - name: Install helm-unittest plugin
+        working-directory: ${{ github.workspace }}
+        run: |
+          set -euo pipefail
+          helm plugin install https://github.com/helm-unittest/helm-unittest.git --version "${HELM_UNITTEST_VERSION}"
+
+      - name: Install kubeconform
+        working-directory: ${{ github.workspace }}
+        run: |
+          set -euo pipefail
+          mkdir -p "${HOME}/.local/bin"
+          tgz="/tmp/kubeconform-linux-amd64.tar.gz"
+          curl -fsSL -o "${tgz}" \
+            "https://github.com/yannh/kubeconform/releases/download/${KUBECONFORM_VERSION}/kubeconform-linux-amd64.tar.gz"
+          printf '%s  %s\n' "${KUBECONFORM_SHA256}" "${tgz}" | sha256sum -c -
+          tar xzf "${tgz}" -C /tmp
+          mv /tmp/kubeconform "${HOME}/.local/bin/kubeconform"
+          echo "${HOME}/.local/bin" >> "${GITHUB_PATH}"
+          rm -f "${tgz}"
+
+      - name: Helm lint
+        run: helm lint . -f values.yaml
+
+      - name: Helm unittest
+        run: helm unittest .
+
+      - name: Helm template (kubeconform)
+        run: |
+          set -euo pipefail
+          helm template rhoso-gitops-test . -f values.yaml | kubeconform -summary \
+            -kubernetes-version "${KUBERNETES_SCHEMA_VERSION}" \
+            -schema-location default \
+            -schema-location 'https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json'
+
+      - name: Helm package
+        run: helm package .
