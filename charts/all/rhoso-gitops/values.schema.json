@@ -4,11 +4,7 @@
   "title": "rhoso-gitops Helm chart values",
   "description": "Validated against templates/ and the documentation block in values.yaml.",
   "type": "object",
-  "required": [
-    "applicationNamespace",
-    "destinationServer",
-    "applications"
-  ],
+  "required": ["applicationNamespace", "destinationServer", "applications"],
   "additionalProperties": false,
   "properties": {
     "applicationNamespace": {
@@ -41,13 +37,7 @@
     "application": {
       "type": "object",
       "description": "Per-application values under applications.<name>.",
-      "required": [
-        "enabled",
-        "repoURL",
-        "path",
-        "targetRevision",
-        "syncOptions"
-      ],
+      "required": ["enabled", "repoURL", "path", "targetRevision", "syncOptions"],
       "additionalProperties": false,
       "properties": {
         "enabled": {
@@ -63,7 +53,7 @@
         },
         "path": {
           "type": "string",
-          "description": "Path inside the repo; empty string uses chart default '.'."
+          "description": "Path inside the repository; empty string uses chart default '.'."
         },
         "targetRevision": {
           "type": "string",
@@ -99,9 +89,7 @@
         "finalizers": {
           "type": "array",
           "description": "Argo CD Application metadata.finalizers (resources finalizer). Omit to use chart default (background).",
-          "default": [
-            "resources-finalizer.argocd.argoproj.io/background"
-          ],
+          "default": ["resources-finalizer.argocd.argoproj.io/background"],
           "minItems": 1,
           "maxItems": 1,
           "items": {

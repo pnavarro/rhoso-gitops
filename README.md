@@ -40,22 +40,26 @@ flowchart LR
 ## Install
 
 1. Copy secrets template if you use Vault integration later:
+
    ```bash
    cp values-secret.yaml.template values-secret.yaml
    ```
 
 2. Install the pattern:
+
    ```bash
    ./pattern.sh make install
    ```
 
    Or validate without applying:
+
    ```bash
    ./pattern.sh make validate-prereq
    ./pattern.sh make show
    ```
 
 3. Watch Argo CD applications:
+
    ```bash
    oc get applications -n vp-gitops
    oc get applications -n openshift-gitops
@@ -64,13 +68,13 @@ flowchart LR
 ## Configuration
 
 | File | Purpose |
-|------|---------|
+| --- | --- |
 | `values-global.yaml` | Pattern name, sync policy, clustergroup chart version |
 | `values-standalone.yaml` | Single-cluster catalog: namespaces, `rhoso-gitops` application |
-| `overrides/values-rhoso-gitops.yaml` | Pins upstream git repo, tag, and paths for child Applications |
+| `overrides/values-rhoso-gitops.yaml` | Pins upstream Git repository, tag, and paths for child Applications |
 | `overrides/values-AWS.yaml` | Optional platform overrides (placeholder) |
 
-To change the upstream git revision, edit `targetRevision` in
+To change the upstream Git revision, edit `targetRevision` in
 `overrides/values-rhoso-gitops.yaml`.
 
 ## Chart layout

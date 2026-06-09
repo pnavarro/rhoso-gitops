@@ -10,7 +10,7 @@ framework as part of the **rhoso-gitops** pattern—not via `helm install` on a
 bastion. Install the pattern with `./pattern.sh make install` as described in the
 [Validated Patterns quick start](https://validatedpatterns.io/learn/quickstart/)
 and the
-[RHOSO GitOps pattern README](../../../README.md#install).
+[RHOSO GitOps pattern readme](../../../README.md#install).
 
 For standalone Helm usage, values reference, and advanced examples using
 `helm install` / `helm template`, see the upstream chart:
@@ -24,7 +24,7 @@ The clustergroup application in `values-standalone.yaml` points Argo CD at
 `overrides/values-rhoso-gitops.yaml` via `extraValueFiles`.
 
 | Layer | File | Role |
-|-------|------|------|
+| --- | --- | --- |
 | Pattern global | `values-global.yaml` | Pattern name, sync policy, clustergroup chart version |
 | Cluster group | `values-standalone.yaml` | Registers the `rhoso-gitops` application |
 | Chart defaults | `charts/all/rhoso-gitops/values.yaml` | Default `applications` map and chart-wide keys |
@@ -83,14 +83,14 @@ applications:
 
 Component URLs for Vault Secrets Operator and External Secrets Operator are
 documented in the
-[upstream components/secrets README](https://github.com/openstack-k8s-operators/gitops/tree/main/components/secrets).
+[upstream components/secrets readme](https://github.com/openstack-k8s-operators/gitops/tree/main/components/secrets).
 
 ## Chart-wide values
 
-| Key | Type | Description |
-|-----|------|-------------|
-| `applicationNamespace` | string | Namespace for rendered `Application` CRs (default `openshift-gitops`). |
-| `destinationServer` | string | `spec.destination.server` (default in-cluster API server). |
+| Key                      | Type   | Description                                                              |
+| ------------------------ | ------ | ------------------------------------------------------------------------ |
+| `applicationNamespace`   | string | Namespace for rendered `Application` CRs (default `openshift-gitops`).   |
+| `destinationServer`      | string | `spec.destination.server` (default in-cluster API server).               |
 
 This chart does not set `spec.destination.namespace`; child apps inherit
 destination namespace from their Git manifests.
@@ -101,10 +101,10 @@ Each `applications.<name>` entry is a DNS-1123 label. Set `enabled: true` to
 render that `Application`; `enabled: false` skips it.
 
 | Key | Type | Description |
-|-----|------|-------------|
+| --- | --- | --- |
 | `enabled` | bool | Render this `Application` or skip. |
 | `repoURL` | string | `spec.source.repoURL`. |
-| `path` | string | Directory in the repo (empty → `"."`). |
+| `path` | string | Directory in the repository (empty → `"."`). |
 | `targetRevision` | string | Branch, tag, or commit (empty → `"HEAD"`). |
 | `syncWave` | string | `argocd.argoproj.io/sync-wave` annotation. |
 | `syncOptions` | list | Used when `syncPolicy` is empty; default includes `Prune=true`. |
@@ -123,7 +123,7 @@ Enabled by default in chart `values.yaml` except `openstack-secrets`
 `example/*` directories at tag `v0.1.0`.
 
 | Application | Purpose (summary) | Default `syncWave` |
-|-------------|-------------------|--------------------|
+| --- | --- | --- |
 | `operator-dependencies` | Infra + optional VSO/ESO via `kustomize.components` | `-20` |
 | `openstack-operator` | OpenStack operator | `-20` |
 | `openstack-operator-cr` | Main `OpenStack` CR | `-15` |
@@ -155,7 +155,7 @@ credential must not live in Git. Typical steps:
 
 1. Create the `openstack` namespace (or the namespace your docs specify).
 2. Create the Kubernetes `Secret` out of band (`oc create secret generic ...`).
-3. Add a Kustomize overlay in **your** Git repo for secret wiring (non-sensitive
+3. Add a Kustomize overlay in **your** Git repository for secret wiring (non-sensitive
    manifests only).
 4. Enable and configure `applications.openstack-secrets` in
    `overrides/values-rhoso-gitops.yaml` (`enabled: true`, `repoURL`, `path`,
@@ -164,7 +164,7 @@ credential must not live in Git. Typical steps:
    `kustomize.components` URLs from the
    [upstream secrets components](https://github.com/openstack-k8s-operators/gitops/tree/main/components/secrets).
 
-See the upstream chart README for full YAML examples and Helm-oriented wording.
+See the upstream chart readme for full YAML examples and Helm-oriented wording.
 
 ## Maintenance
 
@@ -179,7 +179,7 @@ and re-run pattern validation:
 
 ## See also
 
-- [RHOSO GitOps pattern README](../../../README.md)
+- [RHOSO GitOps pattern readme](../../../README.md)
 - [Validated Patterns quick start](https://validatedpatterns.io/learn/quickstart/)
 - [Validated Patterns key concepts](https://validatedpatterns.io/learn/keyconcepts/)
 - [Validated Patterns documentation](https://validatedpatterns.io/)
