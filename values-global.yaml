@@ -1,6 +1,8 @@
 ---
 global:
   pattern: rhoso-gitops
+  secretLoader:
+    disabled: true
   options:
     useCSV: false
     syncPolicy: Automatic

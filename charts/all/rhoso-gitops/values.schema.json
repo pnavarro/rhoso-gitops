@@ -5,7 +5,7 @@
 	"description": "Validated against templates/ and the documentation block in values.yaml.",
 	"type": "object",
 	"required": ["applicationNamespace", "destinationServer", "applications"],
-	"additionalProperties": false,
+	"additionalProperties": true,
 	"properties": {
 		"applicationNamespace": {
 			"type": "string",
