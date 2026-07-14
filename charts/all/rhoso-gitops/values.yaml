@@ -1,6 +1,7 @@
 ---
 # Parameter documentation: charts/all/rhoso-gitops/README.md
-applicationNamespace: openshift-gitops
+# applicationNamespace: override to place child Application CRs in a specific
+# namespace. Defaults to global.namespace ($ARGOCD_APP_NAMESPACE) at sync time.
 destinationServer: https://kubernetes.default.svc
 applications:
   # Deploy and initialize MetalLB, nmstate, cert-manager; install and configure

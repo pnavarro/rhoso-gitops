@@ -4,13 +4,13 @@
 	"title": "rhoso-gitops Helm chart values",
 	"description": "Validated against templates/ and the documentation block in values.yaml.",
 	"type": "object",
-	"required": ["applicationNamespace", "destinationServer", "applications"],
+	"required": ["destinationServer", "applications"],
 	"additionalProperties": true,
 	"properties": {
 		"applicationNamespace": {
 			"type": "string",
 			"minLength": 1,
-			"description": "Namespace for Argo CD Application CRs (metadata.namespace).",
+			"description": "Override namespace for child Application CRs. Defaults to global.namespace ($ARGOCD_APP_NAMESPACE) so apps land in the managing ArgoCD instance's namespace.",
 			"pattern": "^[a-z0-9]([-a-z0-9]*[a-z0-9])?$"
 		},
 		"destinationServer": {
