@@ -4,6 +4,10 @@ clusterGroup:
   namespaces:
     openshift-gitops:
     openstack-operators:
+      # The openstack-operator CSV only supports AllNamespaces install
+      # mode. An empty list omits spec.targetNamespaces from the
+      # OperatorGroup, which OLM treats as AllNamespaces.
+      targetNamespaces: []
     openstack:
   argoProjects:
     - rhoso-gitops-standalone
