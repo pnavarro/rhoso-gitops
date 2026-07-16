@@ -20,5 +20,6 @@ spec:
   destination:
     server: {{ include "rhoso-gitops.destinationServer" $ }}
 {{ include "rhoso-gitops.syncPolicySpec" (dict "app" $app) }}
+{{ include "rhoso-gitops.ignoreDifferences" (dict "app" $app) }}
 {{- end }}
 {{- end }}
