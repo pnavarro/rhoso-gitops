@@ -21,6 +21,11 @@ clusterGroup:
       path: charts/all/rhoso-gitops
       extraValueFiles:
         - /overrides/values-rhoso-gitops.yaml
+      ignoreDifferences:
+        - group: argoproj.io
+          kind: Application
+          jsonPointers:
+            - /metadata/finalizers
   argoCD:
     resourceHealthChecks:
       # This PVC check is the ClusterGroup chart default. It must be
