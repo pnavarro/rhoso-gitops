@@ -37,12 +37,7 @@
 		"application": {
 			"type": "object",
 			"description": "Per-application values under applications.<name>.",
-			"required": [
-				"enabled",
-				"repoURL",
-				"path",
-				"targetRevision"
-			],
+			"required": ["enabled", "repoURL", "path", "targetRevision"],
 			"additionalProperties": false,
 			"properties": {
 				"enabled": {
