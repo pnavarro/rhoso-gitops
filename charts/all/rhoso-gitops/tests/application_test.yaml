@@ -74,58 +74,6 @@ tests:
           path: metadata.finalizers[0]
           value: resources-finalizer.argocd.argoproj.io/background
 
-  - it: uses syncPolicy and ignores top-level syncOptions when both are set
-    set:
-      applicationNamespace: openshift-gitops
-      destinationServer: https://kubernetes.default.svc
-      applications:
-        policy-merge-test:
-          enabled: true
-          repoURL: https://github.com/example/repo
-          path: "."
-          targetRevision: HEAD
-          syncWave: "0"
-          syncPolicy:
-            automated:
-              prune: true
-            syncOptions:
-              - FromNestedPolicy=true
-          syncOptions:
-            - FromTopLevel=true
-    documentSelector:
-      path: metadata.name
-      value: policy-merge-test
-    asserts:
-      - lengthEqual:
-          path: spec.syncPolicy.syncOptions
-          count: 1
-      - equal:
-          path: spec.syncPolicy.syncOptions[0]
-          value: FromNestedPolicy=true
-
-  - it: uses top-level syncOptions when syncPolicy is unset
-    set:
-      applicationNamespace: openshift-gitops
-      destinationServer: https://kubernetes.default.svc
-      applications:
-        syncopt-only:
-          enabled: true
-          repoURL: https://github.com/example/repo
-          path: "."
-          targetRevision: main
-          syncWave: "0"
-          syncOptions:
-            - OnlyFromTopLevel=true
-    documentSelector:
-      path: metadata.name
-      value: syncopt-only
-    asserts:
-      - equal:
-          path: spec.syncPolicy.syncOptions[0]
-          value: OnlyFromTopLevel=true
-      - notExists:
-          path: spec.syncPolicy.automated
-
   - it: allows disabling automated sync via syncPolicy override
     set:
       applicationNamespace: openshift-gitops
@@ -159,8 +107,9 @@ tests:
           repoURL: https://github.com/example/repo
           path: "."
           targetRevision: main
-          syncOptions:
-            - Prune=true
+          syncPolicy:
+            syncOptions:
+              - Prune=true
     documentSelector:
       path: metadata.name
       value: no-wave
@@ -190,8 +139,9 @@ tests:
           path: examples/foo
           targetRevision: main
           syncWave: "0"
-          syncOptions:
-            - Prune=true
+          syncPolicy:
+            syncOptions:
+              - Prune=true
           kustomize:
             namePrefix: dev-
             components:
@@ -217,7 +167,6 @@ tests:
           path: "."
           targetRevision: main
           syncWave: "0"
-          syncOptions: []
     asserts:
       - failedTemplate:
           errorPattern: repoURL
@@ -233,7 +182,6 @@ tests:
           path: "."
           targetRevision: main
           syncWave: "0"
-          syncOptions: []
     asserts:
       - failedTemplate:
           errorPattern: destinationServer
@@ -258,8 +206,9 @@ tests:
           repoURL: https://github.com/example/repo
           path: "."
           targetRevision: main
-          syncOptions:
-            - RespectIgnoreDifferences=true
+          syncPolicy:
+            syncOptions:
+              - RespectIgnoreDifferences=true
           ignoreDifferences:
             - group: core.openstack.org
               kind: OpenStackControlPlane
@@ -290,7 +239,6 @@ tests:
           repoURL: https://github.com/example/repo
           path: "."
           targetRevision: main
-          syncOptions: []
           ignoreDifferences:
             - group: dataplane.openstack.org
               kind: OpenStackDataPlaneNodeSet
@@ -315,7 +263,6 @@ tests:
           path: "."
           targetRevision: main
           syncWave: "0"
-          syncOptions: []
           finalizers:
             - resources-finalizer.argocd.argoproj.io/invalid
     asserts:

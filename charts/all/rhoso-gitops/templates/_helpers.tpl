@@ -66,23 +66,17 @@ Pass dict with key "app" (per-application values map). Omitted if unset, non-map
 
 {{/*
 Build spec.syncPolicy; emit block or nothing.
-If syncPolicy is a non-empty map, it is the sole source (top-level syncOptions is ignored).
-If syncPolicy is absent or empty, top-level syncOptions is merged in as spec.syncPolicy.syncOptions.
 Pass dict with key "app" (per-application values map).
 */}}
 {{- define "rhoso-gitops.syncPolicySpec" -}}
 {{- $app := .app -}}
-{{- $merged := $app.syncPolicy | default dict }}
-{{- if not (kindIs "map" $merged) }}
-{{- $merged = dict }}
+{{- $sp := $app.syncPolicy | default dict }}
+{{- if not (kindIs "map" $sp) }}
+{{- $sp = dict }}
 {{- end }}
-{{- if not (empty $merged) }}
+{{- if not (empty $sp) }}
   syncPolicy:
-{{ toYaml $merged | indent 4 }}
-{{- else if and $app.syncOptions (not (empty $app.syncOptions)) }}
-{{- $only := dict "syncOptions" $app.syncOptions }}
-  syncPolicy:
-{{ toYaml $only | indent 4 }}
+{{ toYaml $sp | indent 4 }}
 {{- end }}
 {{- end }}
 

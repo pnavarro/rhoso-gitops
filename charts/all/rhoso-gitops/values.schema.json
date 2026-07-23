@@ -1,5 +1,5 @@
 {
-	"$schema": "http://json-schema.org/draft-07/schema#",
+	"$schema": "https://json-schema.org/draft/2019-09/schema",
 	"$id": "https://github.com/validatedpatterns-sandbox/rhoso-gitops/charts/all/rhoso-gitops/values.schema.json",
 	"title": "rhoso-gitops Helm chart values",
 	"description": "Validated against templates/ and the documentation block in values.yaml.",
@@ -29,11 +29,11 @@
 				"pattern": "^[a-z0-9]([-a-z0-9]{0,61}[a-z0-9])?$"
 			},
 			"additionalProperties": {
-				"$ref": "#/definitions/application"
+				"$ref": "#/$defs/application"
 			}
 		}
 	},
-	"definitions": {
+	"$defs": {
 		"application": {
 			"type": "object",
 			"description": "Per-application values under applications.<name>.",
@@ -70,11 +70,10 @@
 				},
 				"syncOptions": {
 					"type": "array",
-					"description": "Argo CD sync option strings. Used for spec.syncPolicy.syncOptions when syncPolicy is not set or is an empty object; ignored when syncPolicy is a non-empty object (use syncPolicy.syncOptions).",
-					"minItems": 0,
+					"deprecated": true,
+					"description": "Deprecated: ignored at runtime. Use syncPolicy.syncOptions instead.",
 					"items": {
-						"type": "string",
-						"minLength": 1
+						"type": "string"
 					}
 				},
 				"project": {
@@ -83,7 +82,7 @@
 				},
 				"syncPolicy": {
 					"type": "object",
-					"description": "When non-empty, the map is rendered as spec.syncPolicy in full; top-level syncOptions is not merged in. For syncOptions only, omit syncPolicy or set it to {} and set top-level syncOptions.",
+					"description": "Full spec.syncPolicy map. Defaults to automated sync with retry and Prune=true. Set explicitly to override (e.g. omit automated for manual sync). Include syncOptions inside this map.",
 					"additionalProperties": true
 				},
 				"kustomize": {

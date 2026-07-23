@@ -107,11 +107,10 @@ render that `Application`; `enabled: false` skips it.
 | `path` | string | Directory in the repository (empty → `"."`). |
 | `targetRevision` | string | Branch, tag, or commit (empty → `"HEAD"`). |
 | `syncWave` | string | `argocd.argoproj.io/sync-wave` annotation. |
-| `syncOptions` | list | Used when `syncPolicy` is empty; default includes `Prune=true`. |
+| `syncPolicy` | map | Full `spec.syncPolicy`. Defaults to automated sync with retry and `Prune=true`; set explicitly to override (e.g. remove `automated` for manual sync). Put `syncOptions` inside this map. |
 | `kustomize` | map | `spec.source.kustomize` ([Argo CD Kustomize][argo-kustomize]). |
 | `finalizers` | list | `metadata.finalizers` (`background` or `foreground`). |
 | `project` | string | Argo CD AppProject (default `default`). |
-| `syncPolicy` | map | Full `spec.syncPolicy`. Defaults to automated sync with retry and `Prune=true`; set explicitly to override (e.g. remove `automated` for manual sync). When set, top-level `syncOptions` are ignored. |
 
 Schema validation: `values.schema.json` (used by `helm lint` in CI).
 
