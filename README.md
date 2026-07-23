@@ -77,6 +77,11 @@ flowchart LR
 To change the upstream Git revision, edit `targetRevision` in
 `overrides/values-rhoso-gitops.yaml`.
 
+> **Note:** Child applications use automated sync by default. Pin
+> `targetRevision` to a tag or commit hash in
+> `overrides/values-rhoso-gitops.yaml` — see
+> [chart README](charts/all/rhoso-gitops/README.md#automated-sync-and-revision-stability).
+
 ## Chart layout
 
 - `charts/all/rhoso-gitops/` -- pattern meta-chart (see

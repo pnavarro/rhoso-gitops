@@ -48,6 +48,20 @@ tests:
       - equal:
           path: spec.syncPolicy.syncOptions[0]
           value: Prune=true
+      - exists:
+          path: spec.syncPolicy.automated
+      - equal:
+          path: spec.syncPolicy.retry.limit
+          value: 5
+      - equal:
+          path: spec.syncPolicy.retry.backoff.duration
+          value: 30s
+      - equal:
+          path: spec.syncPolicy.retry.backoff.factor
+          value: 2
+      - equal:
+          path: spec.syncPolicy.retry.backoff.maxDuration
+          value: 3m
 
   - it: renders operator-dependencies with default background finalizer
     values:
@@ -111,6 +125,29 @@ tests:
           value: OnlyFromTopLevel=true
       - notExists:
           path: spec.syncPolicy.automated
+
+  - it: allows disabling automated sync via syncPolicy override
+    set:
+      applicationNamespace: openshift-gitops
+      destinationServer: https://kubernetes.default.svc
+      applications:
+        manual-test:
+          enabled: true
+          repoURL: https://github.com/example/repo
+          path: "."
+          targetRevision: v1.0.0
+          syncPolicy:
+            syncOptions:
+              - Prune=true
+    documentSelector:
+      path: metadata.name
+      value: manual-test
+    asserts:
+      - notExists:
+          path: spec.syncPolicy.automated
+      - equal:
+          path: spec.syncPolicy.syncOptions[0]
+          value: Prune=true
 
   - it: defaults syncWave to 0 when omitted
     set:
