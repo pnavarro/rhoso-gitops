@@ -18,7 +18,6 @@ applications:
           maxDuration: 3m
       syncOptions:
         - Prune=true
-    syncWave: "-20"
   openstack-operator:
     enabled: true
     repoURL: https://github.com/openstack-k8s-operators/gitops
@@ -34,7 +33,6 @@ applications:
           maxDuration: 3m
       syncOptions:
         - Prune=true
-    syncWave: "-20"
   openstack-operator-cr:
     enabled: true
     repoURL: https://github.com/openstack-k8s-operators/gitops
@@ -50,7 +48,6 @@ applications:
           maxDuration: 3m
       syncOptions:
         - Prune=true
-    syncWave: "-15"
   openstack-secrets:
     enabled: false
     repoURL: https://github.com/openstack-k8s-operators/gitops
@@ -66,7 +63,6 @@ applications:
           maxDuration: 3m
       syncOptions:
         - Prune=true
-    syncWave: "-10"
   openstack-networks:
     enabled: true
     repoURL: https://github.com/openstack-k8s-operators/gitops
@@ -82,7 +78,6 @@ applications:
           maxDuration: 3m
       syncOptions:
         - Prune=true
-    syncWave: "0"
   openstack-controlplane:
     enabled: true
     repoURL: https://github.com/openstack-k8s-operators/gitops
@@ -100,7 +95,6 @@ applications:
           maxDuration: 3m
       syncOptions:
         - Prune=true
-    syncWave: "10"
   openstack-dataplane:
     enabled: true
     repoURL: https://github.com/openstack-k8s-operators/gitops
@@ -116,4 +110,3 @@ applications:
           maxDuration: 3m
       syncOptions:
         - Prune=true
-    syncWave: "20"

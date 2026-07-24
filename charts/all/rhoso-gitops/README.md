@@ -150,29 +150,23 @@ Enabled by default in chart `values.yaml` except `openstack-secrets`
 `overrides/values-rhoso-gitops.yaml` pin paths to the upstream
 `example/*` directories at tag `v0.1.0`.
 
-| Application | Purpose (summary) | Default `syncWave` | Sync |
-| --- | --- | --- | --- |
-| `operator-dependencies` | Infra + optional VSO/ESO via `kustomize.components` | `-20` | automated |
-| `openstack-operator` | OpenStack operator | `-20` | automated |
-| `openstack-operator-cr` | Main `OpenStack` CR | `-15` | automated |
-| `openstack-secrets` | Secure-backend sync (disabled until configured) | `-10` | automated |
-| `openstack-networks` | Networks | `0` | automated |
-| `openstack-controlplane` | `OpenStackControlPlane` | `10` | automated |
-| `openstack-dataplane` | Data plane | `20` | automated |
+| Application | Purpose (summary) | Sync |
+| --- | --- | --- |
+| `operator-dependencies` | Infra + optional VSO/ESO via `kustomize.components` | automated |
+| `openstack-operator` | OpenStack operator | automated |
+| `openstack-operator-cr` | Main `OpenStack` CR | automated |
+| `openstack-secrets` | Secure-backend sync (disabled until configured) | automated |
+| `openstack-networks` | Networks | automated |
+| `openstack-controlplane` | `OpenStackControlPlane` | automated |
+| `openstack-dataplane` | Data plane | automated |
 
-### Sync wave ordering
+### Deployment convergence
 
-```mermaid
-flowchart TD
-A["operator-dependencies (-20)"] --> C["openstack-operator-cr (-15)"]
-B["openstack-operator (-20)"] --> C
-C --> D["openstack-secrets (-10)"]
-D --> E["openstack-networks (0)"]
-E --> F["openstack-controlplane (10)"]
-F --> G["openstack-dataplane (20)"]
-```
+All applications deploy at sync-wave `0` (the default) and converge
+eventually. Argo CD launches every child application simultaneously when the
+parent **rhoso-gitops** Application syncs; each child then retries
+(per `syncPolicy.retry`) until its upstream dependencies are satisfied.
 
-Sync waves apply when Argo CD deploys the parent **rhoso-gitops** Application (app-of-apps).
 After changing overrides, confirm child apps in the Argo CD UI or with
 `oc get applications -n openshift-gitops`.
 
