@@ -107,13 +107,41 @@ render that `Application`; `enabled: false` skips it.
 | `path` | string | Directory in the repository (empty → `"."`). |
 | `targetRevision` | string | Branch, tag, or commit (empty → `"HEAD"`). |
 | `syncWave` | string | `argocd.argoproj.io/sync-wave` annotation. |
-| `syncOptions` | list | Used when `syncPolicy` is empty; default includes `Prune=true`. |
+| `syncPolicy` | map | Full `spec.syncPolicy`. Defaults to automated sync with retry and `Prune=true`; set explicitly to override (e.g. remove `automated` for manual sync). Put `syncOptions` inside this map. |
 | `kustomize` | map | `spec.source.kustomize` ([Argo CD Kustomize][argo-kustomize]). |
 | `finalizers` | list | `metadata.finalizers` (`background` or `foreground`). |
 | `project` | string | Argo CD AppProject (default `default`). |
-| `syncPolicy` | map | Full `spec.syncPolicy`; when set, top-level `syncOptions` are ignored. |
 
 Schema validation: `values.schema.json` (used by `helm lint` in CI).
+
+### Automated sync and revision stability
+
+> **Warning:** With automated sync enabled (the default), Argo CD reconciles
+> child applications whenever the upstream Git repository changes. If
+> `targetRevision` is set to a branch name like `main` or `HEAD`, any push
+> to that branch triggers an automatic deployment. This can cause unexpected
+> changes in production.
+>
+> **Always pin `targetRevision` to a tag or commit hash** for stability:
+>
+> ```yaml
+> applications:
+>   openstack-operator:
+>     targetRevision: "v0.3.4"          # tag — recommended
+>   openstack-controlplane:
+>     targetRevision: "abc123def456"    # commit hash — also safe
+> ```
+>
+> To disable automated sync for a specific application, override its
+> `syncPolicy` without the `automated` key:
+>
+> ```yaml
+> applications:
+>   openstack-dataplane:
+>     syncPolicy:
+>       syncOptions:
+>         - Prune=true
+> ```
 
 ## Default applications
 
@@ -122,15 +150,15 @@ Enabled by default in chart `values.yaml` except `openstack-secrets`
 `overrides/values-rhoso-gitops.yaml` pin paths to the upstream
 `example/*` directories at tag `v0.1.0`.
 
-| Application | Purpose (summary) | Default `syncWave` |
-| --- | --- | --- |
-| `operator-dependencies` | Infra + optional VSO/ESO via `kustomize.components` | `-20` |
-| `openstack-operator` | OpenStack operator | `-20` |
-| `openstack-operator-cr` | Main `OpenStack` CR | `-15` |
-| `openstack-secrets` | Secure-backend sync (disabled until configured) | `-10` |
-| `openstack-networks` | Networks | `0` |
-| `openstack-controlplane` | `OpenStackControlPlane` | `10` |
-| `openstack-dataplane` | Data plane | `20` |
+| Application | Purpose (summary) | Default `syncWave` | Sync |
+| --- | --- | --- | --- |
+| `operator-dependencies` | Infra + optional VSO/ESO via `kustomize.components` | `-20` | automated |
+| `openstack-operator` | OpenStack operator | `-20` | automated |
+| `openstack-operator-cr` | Main `OpenStack` CR | `-15` | automated |
+| `openstack-secrets` | Secure-backend sync (disabled until configured) | `-10` | automated |
+| `openstack-networks` | Networks | `0` | automated |
+| `openstack-controlplane` | `OpenStackControlPlane` | `10` | automated |
+| `openstack-dataplane` | Data plane | `20` | automated |
 
 ### Sync wave ordering
 

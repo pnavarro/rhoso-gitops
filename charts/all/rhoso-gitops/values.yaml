@@ -11,8 +11,16 @@ applications:
     enabled: true
     path: "example/dependencies"
     repoURL: https://github.com/openstack-k8s-operators/gitops
-    syncOptions:
-      - Prune=true
+    syncPolicy:
+      automated: {}
+      retry:
+        limit: 5
+        backoff:
+          duration: 30s
+          factor: 2
+          maxDuration: 3m
+      syncOptions:
+        - Prune=true
     syncWave: "-20"
     targetRevision: v0.1.0
   # Deploy openstack-operator.
@@ -22,8 +30,16 @@ applications:
     enabled: true
     path: "example/openstack-operator"
     repoURL: https://github.com/openstack-k8s-operators/gitops
-    syncOptions:
-      - Prune=true
+    syncPolicy:
+      automated: {}
+      retry:
+        limit: 5
+        backoff:
+          duration: 30s
+          factor: 2
+          maxDuration: 3m
+      syncOptions:
+        - Prune=true
     syncWave: "-20"
     targetRevision: v0.1.0
   # Create the main OpenStack Custom Resource.
@@ -33,8 +49,16 @@ applications:
     enabled: true
     path: "example/openstack-operator-cr"
     repoURL: https://github.com/openstack-k8s-operators/gitops
-    syncOptions:
-      - Prune=true
+    syncPolicy:
+      automated: {}
+      retry:
+        limit: 5
+        backoff:
+          duration: 30s
+          factor: 2
+          maxDuration: 3m
+      syncOptions:
+        - Prune=true
     syncWave: "-15"
     targetRevision: v0.1.0
   # Create cluster secrets by syncing from the secure backend (placeholder path).
@@ -45,8 +69,16 @@ applications:
     enabled: false
     path: "TODO"
     repoURL: https://github.com/openstack-k8s-operators/gitops
-    syncOptions:
-      - Prune=true
+    syncPolicy:
+      automated: {}
+      retry:
+        limit: 5
+        backoff:
+          duration: 30s
+          factor: 2
+          maxDuration: 3m
+      syncOptions:
+        - Prune=true
     syncWave: "-10"
     targetRevision: v0.1.0
   # Create underlying networks for controlplane and dataplane.
@@ -56,8 +88,16 @@ applications:
     enabled: true
     path: "example/openstack-networks"
     repoURL: https://github.com/openstack-k8s-operators/gitops
-    syncOptions:
-      - Prune=true
+    syncPolicy:
+      automated: {}
+      retry:
+        limit: 5
+        backoff:
+          duration: 30s
+          factor: 2
+          maxDuration: 3m
+      syncOptions:
+        - Prune=true
     syncWave: "0"
     targetRevision: v0.1.0
   # Deploy and configure OpenStackControlPlane resource.
@@ -69,8 +109,16 @@ applications:
     repoURL: https://github.com/openstack-k8s-operators/gitops
     finalizers:
       - resources-finalizer.argocd.argoproj.io/foreground
-    syncOptions:
-      - Prune=true
+    syncPolicy:
+      automated: {}
+      retry:
+        limit: 5
+        backoff:
+          duration: 30s
+          factor: 2
+          maxDuration: 3m
+      syncOptions:
+        - Prune=true
     syncWave: "10"
     targetRevision: v0.1.0
   # Deploy and configure OpenStackDataPlaneNodeSet and OpenStackDataPlaneDeployment resources.
@@ -80,7 +128,15 @@ applications:
     enabled: true
     path: "example/openstack-dataplane"
     repoURL: https://github.com/openstack-k8s-operators/gitops
-    syncOptions:
-      - Prune=true
+    syncPolicy:
+      automated: {}
+      retry:
+        limit: 5
+        backoff:
+          duration: 30s
+          factor: 2
+          maxDuration: 3m
+      syncOptions:
+        - Prune=true
     syncWave: "20"
     targetRevision: v0.1.0
