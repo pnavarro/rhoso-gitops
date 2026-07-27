@@ -21,7 +21,6 @@ applications:
           maxDuration: 3m
       syncOptions:
         - Prune=true
-    syncWave: "-20"
     targetRevision: v0.1.0
   # Deploy openstack-operator.
   # This covers "Deploying RHOSO - chapter 1"
@@ -40,7 +39,6 @@ applications:
           maxDuration: 3m
       syncOptions:
         - Prune=true
-    syncWave: "-20"
     targetRevision: v0.1.0
   # Create the main OpenStack Custom Resource.
   # This covers "Deploying RHOSO - chapter 1"
@@ -59,7 +57,6 @@ applications:
           maxDuration: 3m
       syncOptions:
         - Prune=true
-    syncWave: "-15"
     targetRevision: v0.1.0
   # Create cluster secrets by syncing from the secure backend (placeholder path).
   # Runs after operator-dependencies provides vault-secrets-operator or external-secrets-operator.
@@ -79,7 +76,6 @@ applications:
           maxDuration: 3m
       syncOptions:
         - Prune=true
-    syncWave: "-10"
     targetRevision: v0.1.0
   # Create underlying networks for controlplane and dataplane.
   # Covers "Deploying RHOSO - chapter 3"
@@ -98,7 +94,6 @@ applications:
           maxDuration: 3m
       syncOptions:
         - Prune=true
-    syncWave: "0"
     targetRevision: v0.1.0
   # Deploy and configure OpenStackControlPlane resource.
   # Covers "Deploying RHOSO - chapter 4"
@@ -119,7 +114,6 @@ applications:
           maxDuration: 3m
       syncOptions:
         - Prune=true
-    syncWave: "10"
     targetRevision: v0.1.0
   # Deploy and configure OpenStackDataPlaneNodeSet and OpenStackDataPlaneDeployment resources.
   # Covers "Deploying RHOSO - chapter 5"
@@ -138,5 +132,4 @@ applications:
           maxDuration: 3m
       syncOptions:
         - Prune=true
-    syncWave: "20"
     targetRevision: v0.1.0

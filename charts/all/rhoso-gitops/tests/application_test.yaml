@@ -29,7 +29,7 @@ tests:
           value: resources-finalizer.argocd.argoproj.io/foreground
       - equal:
           path: metadata.annotations["argocd.argoproj.io/sync-wave"]
-          value: "10"
+          value: "0"
       - equal:
           path: spec.project
           value: default
@@ -118,6 +118,28 @@ tests:
           path: metadata.annotations["argocd.argoproj.io/sync-wave"]
           value: "0"
 
+  - it: uses explicit syncWave when set
+    set:
+      applicationNamespace: openshift-gitops
+      destinationServer: https://kubernetes.default.svc
+      applications:
+        late-app:
+          enabled: true
+          repoURL: https://github.com/example/repo
+          path: "."
+          targetRevision: main
+          syncWave: "10"
+          syncPolicy:
+            syncOptions:
+              - Prune=true
+    documentSelector:
+      path: metadata.name
+      value: late-app
+    asserts:
+      - equal:
+          path: metadata.annotations["argocd.argoproj.io/sync-wave"]
+          value: "10"
+
   - it: omits spec.source.kustomize when not set in values
     values:
       - ../values.yaml
@@ -138,7 +160,6 @@ tests:
           repoURL: https://github.com/example/repo
           path: examples/foo
           targetRevision: main
-          syncWave: "0"
           syncPolicy:
             syncOptions:
               - Prune=true
@@ -166,7 +187,6 @@ tests:
           enabled: true
           path: "."
           targetRevision: main
-          syncWave: "0"
     asserts:
       - failedTemplate:
           errorPattern: repoURL
@@ -181,7 +201,6 @@ tests:
           repoURL: https://github.com/example/repo
           path: "."
           targetRevision: main
-          syncWave: "0"
     asserts:
       - failedTemplate:
           errorPattern: destinationServer
@@ -262,7 +281,6 @@ tests:
           repoURL: https://github.com/example/repo
           path: "."
           targetRevision: main
-          syncWave: "0"
           finalizers:
             - resources-finalizer.argocd.argoproj.io/invalid
     asserts:
