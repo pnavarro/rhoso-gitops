@@ -58,6 +58,10 @@ clusterGroup:
           hs = {}
           hs.status = "Progressing"
           hs.message = ""
+          -- UpgradePending is the normal steady state with Manual
+          -- installPlanApproval and startingCSV pinning: the operator
+          -- runs fine, an upgrade exists but is not approved.
+          -- Mapping to Progressing would break pinned deployments.
           if obj.status ~= nil then
             if obj.status.state ~= nil then
               if obj.status.state == "AtLatestKnown" or obj.status.state == "UpgradePending" then
@@ -195,6 +199,11 @@ clusterGroup:
       - group: dataplane.openstack.org
         kind: OpenStackDataPlaneNodeSet
         check: |
+          -- SetupReady = infrastructure configured, ready for
+          -- Ansible deployment. Overall Ready requires DeploymentReady
+          -- which only fires after a separate DataPlaneDeployment CR
+          -- completes (later sync wave). Using Ready here would
+          -- deadlock sync wave progression.
           hs = {}
           if obj.status ~= nil then
             if obj.status.conditions ~= nil then
