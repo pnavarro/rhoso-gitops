@@ -148,7 +148,7 @@ Schema validation: `values.schema.json` (used by `helm lint` in CI).
 Enabled by default in chart `values.yaml` except `openstack-secrets`
 (`enabled: false` until you configure a real Git path). Pattern overrides in
 `overrides/values-rhoso-gitops.yaml` pin paths to the upstream
-`example/*` directories at tag `v0.1.0`.
+`example/*` directories at tag `v0.3.4`.
 
 | Application | Purpose (summary) | Sync |
 | --- | --- | --- |
