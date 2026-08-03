@@ -1,0 +1,48 @@
+{
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  extends: ["config:recommended"],
+  platformCommit: "enabled",
+  customManagers: [
+    {
+      customType: "regex",
+      managerFilePatterns: ["/charts/all/rhoso-gitops/values\\.yaml$/"],
+      matchStrings: ["targetRevision:\\s*(?<currentValue>v\\d+\\.\\d+\\.\\d+)"],
+      depNameTemplate: "openstack-k8s-operators/gitops",
+      datasourceTemplate: "github-tags",
+      versioningTemplate: "semver",
+    },
+    {
+      customType: "regex",
+      managerFilePatterns: [
+        "/charts/all/rhoso-gitops/tests/application_test\\.yaml$/",
+      ],
+      matchStrings: [
+        "path: spec.source.targetRevision\\n\\s+value:\\s*(?<currentValue>v\\d+\\.\\d+\\.\\d+)",
+      ],
+      depNameTemplate: "openstack-k8s-operators/gitops",
+      datasourceTemplate: "github-tags",
+      versioningTemplate: "semver",
+    },
+    {
+      customType: "regex",
+      managerFilePatterns: ["/\\.github/workflows/jsonschema\\.yaml$/"],
+      matchStrings: ["YQ_VERSION:\\s*(?<currentValue>v\\d+\\.\\d+\\.\\d+)"],
+      depNameTemplate: "mikefarah/yq",
+      datasourceTemplate: "github-releases",
+      versioningTemplate: "semver",
+    },
+  ],
+  packageRules: [
+    {
+      matchDepNames: ["openstack-k8s-operators/gitops"],
+      groupName: "openstack-k8s-operators/gitops tag",
+    },
+    {
+      matchDepNames: ["mikefarah/yq"],
+      postUpgradeTasks: {
+        commands: ["scripts/update-yq-checksum.sh"],
+        fileFilters: [".github/workflows/jsonschema.yaml"],
+      },
+    },
+  ],
+}
