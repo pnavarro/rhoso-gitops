@@ -43,3 +43,75 @@
       syncOptions:
         - Prune=true
         - SkipDryRunOnMissingResource=true
+    enabled: true
+    repoURL: https://github.com/openstack-k8s-operators/gitops
+    path: example/openstack-operator
+    targetRevision: v0.3.1
+    syncPolicy:
+      automated: {}
+      retry:
+        limit: 5
+        backoff:
+          duration: 30s
+          factor: 2
+          maxDuration: 3m
+      syncOptions:
+        - Prune=true
+      patches:
+        - target:
+            kind: OperatorGroup
+            name: openstack
+          patch: |-
+            apiVersion: operators.coreos.com/v1
+            kind: OperatorGroup
+            metadata:
+              name: openstack
+            $patch: delete
+        - target:
+            kind: Namespace
+            name: openstack
+          patch: |-
+            apiVersion: v1
+            kind: Namespace
+            metadata:
+              name: openstack
+            $patch: delete
+        - target:
+            kind: Namespace
+            name: openstack-operators
+          patch: |-
+            apiVersion: v1
+            kind: Namespace
+            metadata:
+              name: openstack-operators
+            $patch: delete
+        - target:
+            kind: Job
+            name: approve-openstack-installplan
+          patch: |-
+            [
+              {"op": "replace", "path": "/metadata/namespace", "value": "rhoso-gitops-standalone"},
+              {"op": "replace", "path": "/spec/template/spec/serviceAccountName", "value": "standalone-gitops-argocd-application-controller"}
+            ]
+        - target:
+            kind: ClusterRoleBinding
+            name: installplan-approver-binding
+          patch: |-
+            [
+              {"op": "replace", "path": "/subjects/0/name", "value": "standalone-gitops-argocd-application-controller"},
+              {"op": "replace", "path": "/subjects/0/namespace", "value": "rhoso-gitops-standalone"}
+  openstack-operator-cr:
+    enabled: true
+    repoURL: https://github.com/openstack-k8s-operators/gitops
+    path: example/openstack-operator-cr
+    targetRevision: v0.3.1
+    syncPolicy:
+      automated: {}
+      retry:
+        limit: 5
+        backoff:
+          duration: 30s
+          factor: 2
+          maxDuration: 3m
+      syncOptions:
+        - Prune=true
