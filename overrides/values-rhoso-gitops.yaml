@@ -115,3 +115,20 @@
           maxDuration: 3m
       syncOptions:
         - Prune=true
+  openstack-controlplane:
+    enabled: true
+    repoURL: https://github.com/pnavarro/osp-on-ocp-showroom
+    path: gitops/environments/demo-env/controlplane
+    targetRevision: main
+    finalizers:
+      - resources-finalizer.argocd.argoproj.io/foreground
+    syncPolicy:
+      automated: {}
+      retry:
+        limit: 5
+        backoff:
+          duration: 30s
+          factor: 2
+          maxDuration: 3m
+      syncOptions:
+        - Prune=true
