@@ -132,3 +132,18 @@
           maxDuration: 3m
       syncOptions:
         - Prune=true
+  openstack-dataplane:
+    enabled: true
+    repoURL: https://github.com/pnavarro/osp-on-ocp-showroom
+    path: gitops/environments/demo-env/dataplane
+    targetRevision: main
+    syncPolicy:
+      automated: {}
+      retry:
+        limit: 5
+        backoff:
+          duration: 30s
+          factor: 2
+          maxDuration: 3m
+      syncOptions:
+        - Prune=true
