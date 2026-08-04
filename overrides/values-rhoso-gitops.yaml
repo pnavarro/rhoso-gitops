@@ -147,3 +147,18 @@
           maxDuration: 3m
       syncOptions:
         - Prune=true
+  openstack-networks:
+    enabled: true
+    repoURL: https://github.com/pnavarro/osp-on-ocp-showroom
+    path: gitops/environments/demo-env/networks
+    targetRevision: main
+    syncPolicy:
+      automated: {}
+      retry:
+        limit: 5
+        backoff:
+          duration: 30s
+          factor: 2
+          maxDuration: 3m
+      syncOptions:
+        - Prune=true  
