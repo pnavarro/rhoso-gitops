@@ -11,7 +11,6 @@
     targetRevision: v0.3.1
     kustomize:
       components:
-        - "https://github.com/openstack-k8s-operators/gitops/components/secrets/external-secrets-operator/redhat?ref=v0.3.1"
         - "https://github.com/openstack-k8s-operators/gitops/components/argocd/hooks/postDelete/deploy-operators?ref=v0.3.1"
         - "https://github.com/openstack-k8s-operators/gitops/components/dependencies/provisioning-config?ref=v0.3.1"
         - "https://github.com/openstack-k8s-operators/gitops/components/argocd/annotations?ref=v0.3.1"
@@ -26,25 +25,9 @@
       syncOptions:
         - Prune=true
         - SkipDryRunOnMissingResource=true
-  openstack-secrets:
+  openstack-operator:
     enabled: true
-    repoURL: https://github.com/$your_github_id/rhoso-gitops
-    path: gitops/environments/demo-env/secrets
-    targetRevision: main
-    syncWave: "-10"
-    syncPolicy:
-      automated: {}
-      retry:
-        limit: 5
-        backoff:
-          duration: 30s
-          factor: 2
-          maxDuration: 3m
-      syncOptions:
-        - Prune=true
-        - SkipDryRunOnMissingResource=true
-    enabled: true
-    repoURL: https://github.com/openstack-k8s-operators/gitops
+  repoURL: https://github.com/openstack-k8s-operators/gitops
     path: example/openstack-operator
     targetRevision: v0.3.1
     syncPolicy:
@@ -132,6 +115,8 @@
           maxDuration: 3m
       syncOptions:
         - Prune=true
+  openstack-secrets:
+    enabled: false
   openstack-dataplane:
     enabled: true
     repoURL: https://github.com/pnavarro/osp-on-ocp-showroom
