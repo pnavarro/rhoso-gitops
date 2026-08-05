@@ -14,18 +14,16 @@
         - "https://github.com/openstack-k8s-operators/gitops/components/argocd/hooks/postDelete/deploy-operators?ref=v0.3.1"
         - "https://github.com/openstack-k8s-operators/gitops/components/dependencies/provisioning-config?ref=v0.3.1"
         - "https://github.com/openstack-k8s-operators/gitops/components/argocd/annotations?ref=v0.3.1"
-    syncPolicy:
-      automated: {}
-      retry:
-        limit: 5
-        backoff:
-          duration: 30s
-          factor: 2
-          maxDuration: 3m
-      syncOptions:
-        - Prune=true
-        - SkipDryRunOnMissingResource=true
-  openstack-operator:
+      patches:
+        - target:
+            kind: Job
+            name: clean-observability
+          patch: |-
+            [
+              {"op": "replace", "path": "/metadata/namespace", "value": "rhoso-gitops-standalone"},
+              {"op": "replace", "path": "/spec/template/spec/serviceAccountName", "value": "standalone-gitops-argocd-application-controller"}
+            ]
+ openstack-operator:
     enabled: true
   repoURL: https://github.com/openstack-k8s-operators/gitops
     path: example/openstack-operator
