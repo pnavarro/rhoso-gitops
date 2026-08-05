@@ -1,0 +1,107 @@
+---
+name: Check docs.redhat.com links
+
+on:
+  schedule:
+    - cron: '15 7 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check-links:
+    name: Check docs.redhat.com links
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout rhoso-gitops
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Checkout docs
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: validatedpatterns/docs
+          path: docs
+          persist-credentials: false
+
+      - name: Check links
+        id: check
+        env:
+          DOCS_PATH: docs
+        run: python .github/scripts/check_docs_links.py
+
+      - name: Create or update issue for broken links
+        if: steps.check.outputs.broken
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        env:
+          BROKEN_JSON: ${{ steps.check.outputs.broken }}
+        with:
+          script: |
+            const broken = JSON.parse(process.env.BROKEN_JSON);
+
+            const label = 'broken-link';
+            const title = 'Broken docs.redhat.com link(s) in documentation';
+
+            const rows = broken.map(b =>
+              `| ${b.url} | ${b.status} | ${b.file} | ${b.line} |`
+            ).join('\n');
+
+            const body = [
+              '## Broken documentation links',
+              '',
+              'The following `docs.redhat.com` links in the',
+              '[validatedpatterns/docs](https://github.com/validatedpatterns/docs) repository',
+              'are returning errors:',
+              '',
+              '| URL | HTTP Status | File | Line |',
+              '|-----|-------------|------|------|',
+              rows,
+              '',
+              '### How to fix',
+              '',
+              '1. Verify the URL in a browser',
+              '2. Find the correct replacement URL on docs.redhat.com',
+              '3. Update the link in the `validatedpatterns/docs` repository',
+              '',
+              '---',
+              '*This issue was automatically created by the `check-docs-links` workflow.*',
+            ].join('\n');
+
+            try {
+              await github.rest.issues.createLabel({
+                ...context.repo,
+                name: label,
+                description: 'Automated: broken external documentation link',
+                color: 'd93f0b',
+              });
+            } catch (e) {
+              if (e.status !== 422) throw e;
+            }
+
+            const { data: existing } = await github.rest.issues.listForRepo({
+              ...context.repo,
+              labels: label,
+              state: 'open',
+              per_page: 1,
+            });
+
+            if (existing.length > 0) {
+              await github.rest.issues.createComment({
+                ...context.repo,
+                issue_number: existing[0].number,
+                body,
+              });
+              core.info(`Updated existing issue #${existing[0].number}`);
+            } else {
+              const { data: issue } = await github.rest.issues.create({
+                ...context.repo,
+                title,
+                body,
+                labels: [label],
+              });
+              core.info(`Created issue #${issue.number}`);
+            }
