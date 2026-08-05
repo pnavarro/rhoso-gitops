@@ -4,7 +4,7 @@
 	"title": "rhoso-gitops Helm chart values",
 	"description": "Validated against templates/ and the documentation block in values.yaml.",
 	"type": "object",
-	"required": ["applicationNamespace", "destinationServer", "applications"],
+	"required": ["destinationServer", "applications"],
 	"additionalProperties": true,
 	"properties": {
 		"applicationNamespace": {
