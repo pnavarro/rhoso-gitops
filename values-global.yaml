@@ -2,7 +2,9 @@
 global:
   pattern: rhoso-gitops
   secretLoader:
-    disabled: true
+    disabled: false
+  secretStore:
+    backend: "none"
   options:
     useCSV: false
     syncPolicy: Automatic
