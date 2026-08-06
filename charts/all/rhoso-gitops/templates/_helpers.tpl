@@ -3,7 +3,13 @@ Namespace for Argo CD Application CRs (metadata.namespace).
 Pass root context ($) from inside range.
 */}}
 {{- define "rhoso-gitops.applicationNamespace" -}}
-{{- default "openshift-gitops" .Values.applicationNamespace | quote -}}
+{{- if .Values.applicationNamespace -}}
+{{- .Values.applicationNamespace | quote -}}
+{{- else if and .Values.global .Values.global.namespace -}}
+{{- .Values.global.namespace | quote -}}
+{{- else -}}
+{{- "openshift-gitops" | quote -}}
+{{- end -}}
 {{- end }}
 
 {{/*

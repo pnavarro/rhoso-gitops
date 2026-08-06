@@ -1,6 +1,9 @@
 ---
 # Parameter documentation: charts/all/rhoso-gitops/README.md
-applicationNamespace: openshift-gitops
+# applicationNamespace is derived from global.pattern and clusterGroup.name
+# by default (matching the framework convention). Set explicitly only to
+# override the auto-derived value.
+# applicationNamespace: ""
 destinationServer: https://kubernetes.default.svc
 applications:
   # Deploy and initialize MetalLB, nmstate, cert-manager; install and configure
