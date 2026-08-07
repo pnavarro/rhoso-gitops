@@ -31,8 +31,8 @@ The clustergroup application in `values-standalone.yaml` points Argo CD at
 | Pattern overrides | `overrides/values-rhoso-gitops.yaml` | Pins upstream `repoURL`, `targetRevision`, paths |
 
 The Validated Patterns operator creates the parent **rhoso-gitops** Application in
-**`vp-gitops`**. This chart creates child Applications in **`openshift-gitops`**
-(see `applicationNamespace`).
+**`vp-gitops`**. This chart creates child Applications in the Argo CD Application
+namespace (`global.namespace`, typically `{pattern}-{clusterGroup}`).
 
 To change upstream Git content (revision, paths, enable/disable apps), edit
 `overrides/values-rhoso-gitops.yaml` and sync the pattern (or let automated sync
@@ -87,10 +87,9 @@ documented in the
 
 ## Chart-wide values
 
-| Key                      | Type   | Description                                                              |
-| ------------------------ | ------ | ------------------------------------------------------------------------ |
-| `applicationNamespace`   | string | Namespace for rendered `Application` CRs (default `openshift-gitops`).   |
-| `destinationServer`      | string | `spec.destination.server` (default in-cluster API server).               |
+| Key                 | Type   | Description                                                |
+| ------------------- | ------ | ---------------------------------------------------------- |
+| `destinationServer` | string | `spec.destination.server` (default in-cluster API server). |
 
 This chart does not set `spec.destination.namespace`; child apps inherit
 destination namespace from their Git manifests.
@@ -168,7 +167,7 @@ parent **rhoso-gitops** Application syncs; each child then retries
 (per `syncPolicy.retry`) until its upstream dependencies are satisfied.
 
 After changing overrides, confirm child apps in the Argo CD UI or with
-`oc get applications -n openshift-gitops`.
+`oc get applications -n rhoso-gitops-standalone`.
 
 ## Secret zero (bootstrap credential)
 

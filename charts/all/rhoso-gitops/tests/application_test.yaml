@@ -9,6 +9,9 @@ tests:
   - it: renders openstack-controlplane Application from default values
     values:
       - ../values.yaml
+    set:
+      global:
+        namespace: rhoso-gitops-standalone
     documentSelector:
       path: metadata.name
       value: openstack-controlplane
@@ -23,7 +26,7 @@ tests:
           value: openstack-controlplane
       - equal:
           path: metadata.namespace
-          value: openshift-gitops
+          value: rhoso-gitops-standalone
       - equal:
           path: metadata.finalizers[0]
           value: resources-finalizer.argocd.argoproj.io/foreground
@@ -76,7 +79,6 @@ tests:
 
   - it: allows disabling automated sync via syncPolicy override
     set:
-      applicationNamespace: openshift-gitops
       destinationServer: https://kubernetes.default.svc
       applications:
         manual-test:
@@ -99,7 +101,6 @@ tests:
 
   - it: defaults syncWave to 0 when omitted
     set:
-      applicationNamespace: openshift-gitops
       destinationServer: https://kubernetes.default.svc
       applications:
         no-wave:
@@ -120,7 +121,6 @@ tests:
 
   - it: uses explicit syncWave when set
     set:
-      applicationNamespace: openshift-gitops
       destinationServer: https://kubernetes.default.svc
       applications:
         late-app:
@@ -152,7 +152,6 @@ tests:
 
   - it: renders spec.source.kustomize when applications entry sets kustomize
     set:
-      applicationNamespace: openshift-gitops
       destinationServer: https://kubernetes.default.svc
       applications:
         kustom-test:
@@ -180,7 +179,6 @@ tests:
 
   - it: fails values schema when repoURL is missing
     set:
-      applicationNamespace: openshift-gitops
       destinationServer: https://kubernetes.default.svc
       applications:
         bad:
@@ -193,7 +191,6 @@ tests:
 
   - it: fails values schema when destinationServer is not an https URI
     set:
-      applicationNamespace: openshift-gitops
       destinationServer: http://insecure.example
       applications:
         a:
@@ -217,7 +214,6 @@ tests:
 
   - it: renders spec.ignoreDifferences when set
     set:
-      applicationNamespace: openshift-gitops
       destinationServer: https://kubernetes.default.svc
       applications:
         ignore-diff-test:
@@ -250,7 +246,6 @@ tests:
 
   - it: renders spec.ignoreDifferences with jqPathExpressions
     set:
-      applicationNamespace: openshift-gitops
       destinationServer: https://kubernetes.default.svc
       applications:
         jq-diff-test:
@@ -273,7 +268,6 @@ tests:
 
   - it: fails values schema when finalizer is not allowed
     set:
-      applicationNamespace: openshift-gitops
       destinationServer: https://kubernetes.default.svc
       applications:
         bad:
@@ -286,3 +280,22 @@ tests:
     asserts:
       - failedTemplate:
           errorPattern: finalizers
+
+  - it: uses global.namespace for Application metadata.namespace when set
+    set:
+      global:
+        namespace: rhoso-gitops-standalone
+      destinationServer: https://kubernetes.default.svc
+      applications:
+        ns-test:
+          enabled: true
+          repoURL: https://github.com/example/repo
+          path: "."
+          targetRevision: main
+    documentSelector:
+      path: metadata.name
+      value: ns-test
+    asserts:
+      - equal:
+          path: metadata.namespace
+          value: rhoso-gitops-standalone
