@@ -1,18 +1,4 @@
 {{/*
-Namespace for Argo CD Application CRs (metadata.namespace).
-Pass root context ($) from inside range.
-*/}}
-{{- define "rhoso-gitops.applicationNamespace" -}}
-{{- if .Values.applicationNamespace -}}
-{{- .Values.applicationNamespace | quote -}}
-{{- else if and .Values.global .Values.global.namespace -}}
-{{- .Values.global.namespace | quote -}}
-{{- else -}}
-{{- "openshift-gitops" | quote -}}
-{{- end -}}
-{{- end }}
-
-{{/*
 Default Kubernetes API server URL for spec.destination.server.
 Pass root context ($) from inside range.
 */}}

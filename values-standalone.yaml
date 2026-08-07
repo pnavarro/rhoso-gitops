@@ -2,7 +2,6 @@
 clusterGroup:
   name: standalone
   namespaces:
-    openshift-gitops:
     openstack-operators:
       # The openstack-operator CSV only supports AllNamespaces install
       # mode. An empty list omits spec.targetNamespaces from the
@@ -16,7 +15,7 @@ clusterGroup:
   applications:
     rhoso-gitops:
       name: rhoso-gitops
-      namespace: openshift-gitops
+      namespace: rhoso-gitops-standalone
       argoProject: rhoso-gitops-standalone
       path: charts/all/rhoso-gitops
       extraValueFiles:

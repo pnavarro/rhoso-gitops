@@ -5,7 +5,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: {{ $name }}
-  namespace: {{ include "rhoso-gitops.applicationNamespace" $ }}
+  namespace: {{ index ($.Values.global | default dict) "namespace" | quote }}
   finalizers:
 {{- include "rhoso-gitops.applicationFinalizers" (dict "app" $app) | nindent 4 }}
   annotations:
