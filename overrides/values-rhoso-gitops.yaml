@@ -72,3 +72,5 @@ applications:
               {"op": "replace", "path": "/subjects/0/name", "value": "standalone-gitops-argocd-application-controller"},
               {"op": "replace", "path": "/subjects/0/namespace", "value": "rhoso-gitops-standalone"}
             ]
+  openstack-secrets:
+    enabled: false
