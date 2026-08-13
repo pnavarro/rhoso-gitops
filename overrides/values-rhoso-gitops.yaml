@@ -4,3 +4,22 @@
 # (charts/all/rhoso-gitops/values.yaml). Unspecified keys inherit
 # the chart defaults automatically.
 # See charts/all/rhoso-gitops/README.md for available keys and examples.
+applications:
+  operator-dependencies:
+    repoURL: https://github.com/openstack-k8s-operators/gitops
+    path: example/dependencies
+    targetRevision: v0.3.4
+    kustomize:
+      components:
+        - "https://github.com/openstack-k8s-operators/gitops/components/argocd/hooks/postDelete/deploy-operators?ref=v0.3.4"
+        - "https://github.com/openstack-k8s-operators/gitops/components/dependencies/provisioning-config?ref=v0.3.4"
+        - "https://github.com/openstack-k8s-operators/gitops/components/argocd/annotations?ref=v0.3.4"
+      patches:
+        - target:
+            kind: Job
+            name: clean-observability
+          patch: |-
+            [
+              {"op": "replace", "path": "/metadata/namespace", "value": "rhoso-gitops-standalone"},
+              {"op": "replace", "path": "/spec/template/spec/serviceAccountName", "value": "standalone-gitops-argocd-application-controller"}
+            ]
