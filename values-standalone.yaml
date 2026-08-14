@@ -8,11 +8,6 @@ clusterGroup:
       # OperatorGroup, which OLM treats as AllNamespaces.
       targetNamespaces: []
     openstack:
-    metallb-system:
-    openshift-nmstate:
-    openshift-operators:
-    openshift-marketplace:
-    cert-manager-operator:
   argoProjects:
     - rhoso-gitops-standalone
   sharedValueFiles:

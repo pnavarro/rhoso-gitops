@@ -4,7 +4,7 @@ global:
   secretLoader:
     disabled: false
   secretStore:
-    backend: "none"
+    backend: none
   options:
     useCSV: false
     syncPolicy: Automatic
