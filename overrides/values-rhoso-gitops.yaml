@@ -72,3 +72,17 @@ applications:
     repoURL: https://github.com/pnavarro/osp-on-ocp-showroom
     path: gitops/environments/demo-env/networks
     targetRevision: main
+  openstack-controlplane:
+    repoURL: https://github.com/pnavarro/osp-on-ocp-showroom
+    path: gitops/environments/demo-env/controlplane
+    targetRevision: main
+    kustomize:
+      patches:
+        - target:
+            kind: Job
+            name: ctlplane
+          patch: |-
+            [
+              {"op": "replace", "path": "/metadata/namespace", "value": "openshift-gitops"},
+              {"op": "replace", "path": "/spec/template/spec/serviceAccountName", "value": "openshift-gitops-argocd-application-controller"}
+            ]
