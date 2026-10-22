@@ -11,6 +11,14 @@ import pytest
 import yaml
 from openshift.dynamic.exceptions import NotFoundError, ResourceNotFoundError
 
+# k-orc (ORC) integration tests. The conftest.py in this directory puts the
+# hyphenated k-orc directory on sys.path. Star-import pulls in the test
+# functions and their module-scoped fixture; helpers redefined below
+# (wait_until etc.) are unaffected because the imported functions bind to
+# their own module globals.
+from test_k_orc import *  # noqa: F401, F403, E402, RUF100
+from test_k_orc import CI_FEATURE_LABEL
+
 PATTERN_API_VERSION = "gitops.hybrid-cloud-patterns.io/v1alpha1"
 APPLICATION_API_VERSION = "argoproj.io/v1alpha1"
 OPERATOR_CORES_API_VERSION = "operators.coreos.com/v1alpha1"
@@ -38,7 +46,7 @@ TEST_TIMEOUT = float(os.getenv("VP_RHOSO_TEST_TIMEOUT", "300"))
 START_TIME = time.monotonic()
 
 
-def load_yaml(path: Path) -> dict:
+def load_yaml(path: Path) -> dict:  # type: ignore[no-redef]
     with path.open(encoding="utf-8") as yaml_file:
         return yaml.safe_load(yaml_file)
 
@@ -152,7 +160,9 @@ def assert_field(actual: object, expected: object, context: str) -> None:
     assert actual == expected, f"{context}: expected {expected!r}, got {actual!r}"
 
 
-def get_resource(client, api_version: str, kind: str, namespace: str, name: str):
+def get_resource(  # type: ignore[no-redef]
+    client, api_version: str, kind: str, namespace: str, name: str
+):
     resource = client.resources.get(api_version=api_version, kind=kind)
     try:
         return resource.get(name=name, namespace=namespace)
@@ -168,6 +178,12 @@ def list_application_names(client, namespace: str) -> list[str]:
     return sorted(
         application.metadata.name
         for application in applications.get(namespace=namespace).items or []
+        # Applications owned by CI features (e.g. k-orc) are created by the
+        # tests themselves, not by the pattern chart: exclude them from the
+        # pattern inventory.
+        if not (getattr(application.metadata, "labels", None) or {}).get(
+            CI_FEATURE_LABEL
+        )
     )
 
 
@@ -216,7 +232,7 @@ def child_application_names(client, namespace: str, parent_name: str) -> list[st
     return sorted({child["name"] for child in children})
 
 
-def condition_status(resource, condition_type: str) -> str | None:
+def condition_status(resource, condition_type: str) -> str | None:  # type: ignore[no-redef]
     conditions = getattr(getattr(resource, "status", None), "conditions", None) or []
     for condition in conditions:
         if getattr(condition, "type", None) == condition_type:
@@ -224,7 +240,7 @@ def condition_status(resource, condition_type: str) -> str | None:
     return None
 
 
-def wait_until(check: Callable[[], None], description: str) -> None:
+def wait_until(check: Callable[[], None], description: str) -> None:  # type: ignore[no-redef]
     last_error = "condition did not run"
     while True:
         try:
@@ -311,14 +327,7 @@ def test_application_inventory(
             f"{sorted(deployed_helm_applications)}"
         )
 
-        applications = openshift_dyn_client.resources.get(
-            api_version=APPLICATION_API_VERSION,
-            kind="Application",
-        )
-        actual = sorted(
-            application.metadata.name
-            for application in applications.get(namespace=namespace).items or []
-        )
+        actual = list_application_names(openshift_dyn_client, namespace)
         assert actual == expected, (
             f"Application inventory in {namespace}: expected {expected}, "
             f"got {actual}; missing {sorted(set(expected) - set(actual))}, "
