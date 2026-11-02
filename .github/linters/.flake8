@@ -1,0 +1,6 @@
+[flake8]
+max-line-length = 120
+extend-ignore = E203
+# conftest.py re-exports the validatedpatterns test fixtures via a star import
+per-file-ignores =
+    tests/ci/conftest.py:F401,F403
