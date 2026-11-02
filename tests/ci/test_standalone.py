@@ -3,8 +3,9 @@ from __future__ import annotations
 import os
 import subprocess
 import time
+from collections.abc import Callable
 from pathlib import Path
-from typing import Callable, TypedDict
+from typing import TypedDict
 
 import pytest
 import yaml
@@ -463,9 +464,7 @@ def test_operator_subscription(
         subscriptions = application_resources(application, "Subscription")
         assert (
             subscriptions
-        ), "Application {}/openstack-operator has no deployed Subscriptions".format(
-            namespace
-        )
+        ), f"Application {namespace}/openstack-operator has no deployed Subscriptions"
         assert len(subscriptions) == 1, (
             "Expected one OpenStack Subscription, got "
             f"{[subscription['name'] for subscription in subscriptions]}"
@@ -551,9 +550,7 @@ def test_openstack_operator_ready(openshift_dyn_client, pattern_configuration):
         openstack_resources = application_resources(application, "OpenStack")
         assert (
             openstack_resources
-        ), "Application {}/openstack-operator-cr has no deployed OpenStack CR".format(
-            namespace
-        )
+        ), f"Application {namespace}/openstack-operator-cr has no deployed OpenStack CR"
         assert len(openstack_resources) == 1, (
             "Expected one OpenStack CR, got "
             f"{[resource['name'] for resource in openstack_resources]}"
@@ -601,8 +598,8 @@ def test_controlplane_ready(openshift_dyn_client, pattern_configuration):
             "OpenStackControlPlane",
         )
         assert controlplane_resources, (
-            "Application {}/openstack-controlplane has no deployed "
-            "OpenStackControlPlane resources".format(namespace)
+            f"Application {namespace}/openstack-controlplane has no deployed "
+            "OpenStackControlPlane resources"
         )
         for controlplane_resource in controlplane_resources:
             controlplane_namespace = controlplane_resource["namespace"] or "openstack"
@@ -653,12 +650,12 @@ def test_dataplane_ready(openshift_dyn_client, pattern_configuration):
             "OpenStackDataPlaneDeployment",
         )
         assert node_sets, (
-            "Application {}/openstack-dataplane has no deployed "
-            "OpenStackDataPlaneNodeSet resources".format(namespace)
+            f"Application {namespace}/openstack-dataplane has no deployed "
+            "OpenStackDataPlaneNodeSet resources"
         )
         assert deployments, (
-            "Application {}/openstack-dataplane has no deployed "
-            "OpenStackDataPlaneDeployment resources".format(namespace)
+            f"Application {namespace}/openstack-dataplane has no deployed "
+            "OpenStackDataPlaneDeployment resources"
         )
         for node_set in node_sets:
             dataplane_namespace = node_set["namespace"] or "openstack"
