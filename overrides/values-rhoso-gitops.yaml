@@ -74,3 +74,7 @@ applications:
             ]
   openstack-secrets:
     enabled: false
+  openstack-networks:
+    repoURL: https://github.com/pnavarro/osp-on-ocp-showroom
+    path: gitops/environments/demo-env/networks
+    targetRevision: main
